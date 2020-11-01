@@ -1,0 +1,72 @@
+# Default values for prometheus-org-runner-exporter.
+
+image:
+  repository: tchelovilar/github-org-runner-exporter
+  pullPolicy: IfNotPresent
+  tag: "0.1.2"
+
+
+nameOverride: ""
+fullnameOverride: ""
+
+env:
+# - name: OWNER
+#   value: vilarcorp
+# - name: PRIVATE_GITHUB_TOKEN
+#   valueFrom:
+#     secretKeyRef:
+#       key: token
+#       name: github-token
+
+# Define environment variables from secret
+# envFromSecret: github-token
+
+serviceMonitor:
+  enabled: yes
+  labels:
+    release: prometheus
+  # Set how frequently Prometheus should scrape
+  interval: 20s
+  # Set the namespace the ServiceMonitor should be deployed
+  # namespace: monitoring
+  # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+  # labels:
+  # Set timeout for scrape
+  # timeout: 10s
+  # Set of labels to transfer on the Kubernetes Service onto the target.
+  # targetLabels: []
+  # metricRelabelings: []
+
+imagePullSecrets: []
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 2000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8000
+
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
