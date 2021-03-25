@@ -36,7 +36,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.env }}
           env:
-          {{ toYaml .Values.env | indent 12 }}
+          {{ toYaml .Values.env | nindent 12 }}
           {{- end }}
           {{- if .Values.envFromSecret }}
           envFrom:
