@@ -34,7 +34,7 @@ class runnerExports:
         self.metric_runner_org_busy = Gauge(
             "github_runner_org_busy",
             "Runner busy status",
-            ["name", "id", "os", "labels", "busy"],
+            ["name", "id", "os", "status", "labels", "busy"],
         )
 
     def export_metrics(self, runner_list: list):
@@ -108,14 +108,15 @@ class runnerExports:
             runner_os,
             labels,
             runner_busy,
+            runner_status,
         ) in self.metric_runner_org_busy._metrics:
             if runner_id not in current_runners:
                 runners_to_remove.append(
-                    (runner_name, runner_id, runner_os, labels, runner_busy)
+                    (runner_name, runner_id, runner_os, labels, runner_busy, runner_status)
                 )
         for runner_name, runner_id, runner_os, labels, runner_busy in runners_to_remove:
             self.metric_runner_org_busy.remove(
-                runner_name, runner_id, runner_os, labels, runner_busy
+                runner_name, runner_id, runner_os, labels, runner_busy, runner_status
             )
 
     def aggregate_labels(self, labels: dict):
@@ -173,11 +174,11 @@ class runnerExports:
             busy = 1
 
         self.metric_runner_org_busy.labels(
-            runner.get("name"), runner.get("id"), runner.get("os"), agg_labels, "true"
+            runner.get("name"), runner.get("id"), runner.get("os"), runner.get("status"), agg_labels, "true"
         ).set(busy)
 
         self.metric_runner_org_busy.labels(
-            runner.get("name"), runner.get("id"), runner.get("os"), agg_labels, "false"
+            runner.get("name"), runner.get("id"), runner.get("os"), runner.get("status"), agg_labels, "false"
         ).set(idle)
 
 
