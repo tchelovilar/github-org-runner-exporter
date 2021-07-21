@@ -1,10 +1,6 @@
 # Github org runner exporter
 
-<<<<<<< HEAD
-Prometheus metrics exporter for github self-hosted runners.
-=======
-Prometheus metrics exporter for github actions runners self-hosted.
->>>>>>> Add grafana dashboard
+Prometheus metrics exporter for github actions self-hosted runners.
 
 
 ## Settings
@@ -39,5 +35,6 @@ helm install github-runner-exporter ./deploy/helm-chart/prometheus-org-runner-ex
 
 ## Grafana Dashboard
 
-Import the grafana dashboard file
-[grafana/nonono](./grafana/nonono)
+Import the grafana dashboard file [grafana/dashboard.json](./grafana/dashboard.json)
+
+![Grafana Dashboard](grafana/screenshot.png)
