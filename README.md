@@ -1,6 +1,10 @@
 # Github org runner exporter
 
+<<<<<<< HEAD
 Prometheus metrics exporter for github self-hosted runners.
+=======
+Prometheus metrics exporter for github actions runners self-hosted.
+>>>>>>> Add grafana dashboard
 
 
 ## Settings
