@@ -24,6 +24,7 @@ env:
 serviceMonitor:
   enabled: yes
   labels:
+    app: kube-prometheus-stack
     release: prometheus
   # Set how frequently Prometheus should scrape
   interval: 20s
@@ -36,6 +37,12 @@ serviceMonitor:
   # Set of labels to transfer on the Kubernetes Service onto the target.
   # targetLabels: []
   # metricRelabelings: []
+
+prometheusRules:
+  enabled: yes
+  labels:
+    app: kube-prometheus-stack
+    release: prometheus
 
 imagePullSecrets: []
 

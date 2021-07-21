@@ -1,0 +1,26 @@
+{{- if .Values.prometheusRules }}
+{{- if and ( .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" ) ( .Values.prometheusRules.enabled ) }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+{{- if .Values.prometheusRules.labels }}
+  labels:
+{{ toYaml .Values.prometheusRules.labels | indent 4}}
+{{- end }}
+  name: {{ template "prometheus-org-runner-exporter.fullname" . }}
+{{- if .Values.prometheusRules.namespace }}
+  namespace: {{ .Values.prometheusRules.namespace }}
+{{- end }}
+spec:
+  groups:
+  - name: github-runner-exporter
+    rules:
+      - alert: RunnersDown
+        expr: sum(github_runner_org_status{status="online"}) by (labels) == 0
+        annotations:
+          message: There is no online runners for {{ "{{ $labels.labels }}" }} labels
+        for: 5m
+        labels:
+          severity: critical
+{{- end }}
+{{- end }}
