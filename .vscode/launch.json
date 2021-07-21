@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "runner-exporter.py",
+            "name": "runner_exporter.py",
             "type": "python",
             "request": "launch",
-            "program": "src/runner-exporter.py",
+            "program": "runner_exporter/runner_exporter.py",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.env"
         }

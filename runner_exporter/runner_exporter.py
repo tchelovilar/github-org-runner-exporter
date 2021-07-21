@@ -3,6 +3,7 @@ import os
 
 from prometheus_client import start_http_server, Counter, Gauge
 from time import sleep
+from logger import get_logger
 
 # Read environment variables
 REFRESH_INTERVAL = os.environ.get("REFRESH_INTERVAL", 20)
@@ -142,7 +143,10 @@ class runnerExports:
 
 
 def main():
+    logger = get_logger()
+
     # Start prometheus metrics
+    logger.info("Starting metrics server")
     start_http_server(8000)
 
     metric_runner_api_ratelimit = Gauge(
@@ -154,18 +158,21 @@ def main():
     runner_exports = runnerExports()
 
     while True:
-        # Get actions runners status
         headers = {"Authorization": f"token {PRIVATE_GITHUB_TOKEN}"}
         url = f"https://api.github.com/orgs/{OWNER}/actions/runners"
+        logger.debug(f"Sending the api request for /orgs/{OWNER}/actions/runners")
         result = requests.get(url, headers=headers)
 
         if result.headers:
             value = result.headers.get("X-RateLimit-Remaining")
+            logger.debug(f"Remaining requests: {value}")
             metric_runner_api_ratelimit.labels(OWNER).set(int(value))
 
         if result.ok:
             runner_list = result.json()
             runner_exports.export_metrics(runner_list["runners"])
+        else:
+            logger.error(f"Api request returned error: {result.reason} {result.text}")
 
         sleep(REFRESH_INTERVAL)
 

@@ -6,6 +6,6 @@ COPY requirements.txt .
 
 RUN pip3 install -r requirements.txt
 
-COPY src .
+COPY runner_exporter .
 
-CMD [ "python", "-u",  "runner-exporter.py" ]
+CMD [ "python", "-u",  "runner_exporter.py" ]

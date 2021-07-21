@@ -1,6 +1,6 @@
 # Github org runner exporter
 
-Prometheus exporter metrics for github self-hosted runners.
+Prometheus metrics exporter for github self-hosted runners.
 
 
 ## Settings
@@ -10,9 +10,10 @@ Prometheus exporter metrics for github self-hosted runners.
 | PRIVATE_GITHUB_TOKEN | Yes      | Github token with read org permissions
 | OWNER                | Yes      | Github organization name
 | REFRESH_INTERVAL     | No       | Internval time in seconds betwen api requests (Default: 20)
+| LOG_LEVEL            | No       | Log level: DEBUG, INFO, WARNING or ERROR (Default: INFO)
 
 
-## Usage with helm
+## Deploy with helm
 
 Clone the repository:
 
@@ -30,3 +31,9 @@ cd github-org-runner-exporter
 
 helm install github-runner-exporter ./deploy/helm-chart/prometheus-org-runner-exporter/
 ```
+
+
+## Grafana Dashboard
+
+Import the grafana dashboard file
+[grafana/nonono](./grafana/nonono)
