@@ -10,6 +10,8 @@ REFRESH_INTERVAL = os.environ.get("REFRESH_INTERVAL", 20)
 PRIVATE_GITHUB_TOKEN = os.environ["PRIVATE_GITHUB_TOKEN"]
 OWNER = os.environ["OWNER"]
 
+logger = get_logger()
+
 
 class runnerExports:
     def __init__(self):
@@ -50,23 +52,32 @@ class runnerExports:
         """
             Case some runner is deleted this function will remove from the metrics
         """
-        # Remove ghosts form metric_runner_org_status metric
+        # Remove metric_runner_org_status ghost metrics
         active_metrics = self.metric_runner_org_status._metrics.copy()
         for runner in active_metrics:
             if runner[1] not in current_runners:
-                self.metric_runner_org_status.remove(**runner)
+                logger.debug(
+                    f"Removing {runner[0]} metric_runner_org_status metrics. {str(runner)}"
+                )
+                self.metric_runner_org_status.remove(*runner)
 
-        # Remove ghosts form metric_runner_org_label_status metric
+        # Remove metric_runner_org_label_status ghost metrics
         active_metrics = self.metric_runner_org_label_status._metrics.copy()
         for runner in active_metrics:
             if runner[1] not in current_runners:
-                self.metric_runner_org_label_status.remove(**runner)
+                logger.debug(
+                    f"Removing {runner[0]} metric_runner_org_label_status metrics. {str(runner)}"
+                )
+                self.metric_runner_org_label_status.remove(*runner)
 
-        # Remove ghosts form metric_runner_org_busy metric
+        # Remove metric_runner_org_busy ghost metrics
         active_metrics = self.metric_runner_org_busy._metrics.copy()
         for runner in active_metrics:
             if runner[1] not in current_runners:
-                self.metric_runner_org_busy.remove(**runner)
+                logger.debug(
+                    f"Removing {runner[0]} metric_runner_org_busy metrics. {str(runner)}"
+                )
+                self.metric_runner_org_busy.remove(*runner)
 
     def aggregate_labels(self, labels: dict):
         """
@@ -143,7 +154,6 @@ class runnerExports:
 
 
 def main():
-    logger = get_logger()
 
     # Start prometheus metrics
     logger.info("Starting metrics server")
