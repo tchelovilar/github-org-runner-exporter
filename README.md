@@ -13,23 +13,25 @@ Prometheus metrics exporter for github actions self-hosted runners.
 | LOG_LEVEL            | No       | Log level: DEBUG, INFO, WARNING or ERROR (Default: INFO)
 
 
-## Deploy with helm
+## How to deploy
 
-Clone the repository:
+Create a secret with the [private token](https://github.com/settings/tokens) and the ornanization name:
 
-```sh
-git clone git@github.com:tchelovilar/github-org-runner-exporter.git
+```
+kubectl create secret generic runner-exporter --from-literal=PRIVATE_GITHUB_TOKEN=<token> --from-literal=OWNER=<org>
 ```
 
-Update the values file [deploy/helm-chart/prometheus-org-runner-exporter/values.yaml](./deploy/helm-chart/prometheus-org-runner-exporter/values.yaml)
-with environment settings described above.
+Add the helm repo:
 
-Go to the project foldar and execute helm install command:
+```
+helm repo add tchelovilar https://tchelovilar.github.io/github-org-runner-exporter/
+helm repo update
+```
 
-```sh
-cd github-org-runner-exporter
+Install the helm chart:
 
-helm install github-runner-exporter ./deploy/helm-chart/prometheus-org-runner-exporter/
+```
+helm install github-runner-exporter --set envFromSecret=runner-exporter tchelovilar/prometheus-org-runner-exporter
 ```
 
 

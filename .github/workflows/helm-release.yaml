@@ -3,7 +3,11 @@ name: Release Charts
 on:
   push:
     branches:
+<<<<<<< HEAD
       - feature/helm-release
+=======
+      - master
+>>>>>>> master
 
 jobs:
   release:
