@@ -6,7 +6,7 @@ from time import sleep
 from logger import get_logger
 
 # Read environment variables
-REFRESH_INTERVAL = os.environ.get("REFRESH_INTERVAL", 20)
+REFRESH_INTERVAL = int(os.environ.get("REFRESH_INTERVAL", 20))
 PRIVATE_GITHUB_TOKEN = os.environ["PRIVATE_GITHUB_TOKEN"]
 OWNER = os.environ["OWNER"]
 
