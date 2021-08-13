@@ -3,7 +3,7 @@
 image:
   repository: tchelovilar/github-org-runner-exporter
   pullPolicy: IfNotPresent
-  tag: "0.1.4"
+  tag: "0.1.5"
 
 
 nameOverride: ""
