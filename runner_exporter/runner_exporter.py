@@ -88,6 +88,8 @@ class runnerExports:
             if label["type"] == "custom":
                 agg_labels.append(label["name"])
 
+        agg_labels.sort()
+
         return ",".join(agg_labels)
 
     def export_runner_status(self, runner: dict, agg_labels: str):
