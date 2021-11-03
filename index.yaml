@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   prometheus-org-runner-exporter:
   - apiVersion: v2
+    appVersion: 0.1.7
+    created: "2021-11-03T23:38:37.973824168Z"
+    description: A Helm chart for Kubernetes
+    digest: ef68fefbda66149a1f4747a387de5d53bf7a33acce61e2173e59be036c4e2076
+    name: prometheus-org-runner-exporter
+    type: application
+    urls:
+    - https://github.com/tchelovilar/github-org-runner-exporter/releases/download/prometheus-org-runner-exporter-0.1.7/prometheus-org-runner-exporter-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
     appVersion: 0.1.6
     created: "2021-08-31T15:01:23.486000252Z"
     description: A Helm chart for Kubernetes
@@ -41,4 +51,4 @@ entries:
     urls:
     - https://github.com/tchelovilar/github-org-runner-exporter/releases/download/prometheus-org-runner-exporter-0.1.2/prometheus-org-runner-exporter-0.1.2.tgz
     version: 0.1.2
-generated: "2021-08-31T15:01:23.486017453Z"
+generated: "2021-11-03T23:38:37.973857768Z"
