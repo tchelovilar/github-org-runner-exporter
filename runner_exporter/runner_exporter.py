@@ -171,15 +171,12 @@ class githubApi:
     def list_runners(self) -> list:
         runners_list = []
 
-        page = 1
         per_page = 100
+        url = f"https://api.github.com/orgs/{self.github_owner}/actions/runners?per_page={per_page}"
 
         while True:
             try:
-                url = f"https://api.github.com/orgs/{self.github_owner}/actions/runners?page={page}&per_page={per_page}"
-                self.logger.debug(
-                    f"Sending the api request for /orgs/{self.github_owner}/actions/runners"
-                )
+                self.logger.debug(f"Sending the api request for {url}")
                 result = requests.get(url, headers=self.headers)
 
                 if result.headers:
@@ -189,20 +186,21 @@ class githubApi:
                         int(remaining_requests)
                     )
 
-                if result.ok:
-                    api_result = result.json()
-                    runners_list += api_result["runners"]
-
-                    if not "next" in result.links.keys():
-                        break
-                else:
+                if not result.ok:
                     logger.error(
                         f"Api request returned error: {result.reason} {result.text}"
                     )
                     return []
 
-                page += 1
-            except:
+                api_result = result.json()
+                runners_list += api_result["runners"]
+
+                if "next" in result.links.keys():
+                    url = result.links["next"]["url"]
+                else:
+                    break
+            except Exception as error:
+                logger.error(f"Exception: {error}")
                 return []
 
         return runners_list
