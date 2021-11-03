@@ -171,9 +171,10 @@ def main():
 
     while True:
         headers = {"Authorization": f"token {PRIVATE_GITHUB_TOKEN}"}
-        url = f"https://api.github.com/orgs/{OWNER}/actions/runners"
+        url = f"https://api.github.com/orgs/{OWNER}/actions/runners?per_page=100"
         logger.debug(f"Sending the api request for /orgs/{OWNER}/actions/runners")
         result = requests.get(url, headers=headers)
+        all_runners=[]
 
         if result.headers:
             value = result.headers.get("X-RateLimit-Remaining")
@@ -182,7 +183,15 @@ def main():
 
         if result.ok:
             runner_list = result.json()
-            runner_exports.export_metrics(runner_list["runners"])
+            number_of_pages = (runner_list["total_count"]//100)+1
+            for page in range(1, number_of_pages+1):
+                url = f"https://api.github.com/orgs/{OWNER}/actions/runners?per_page=100&page={page}"
+                logger.debug(f"Sending the api request for /orgs/{OWNER}/actions/runners?per_page=100&page={page}")
+                result = requests.get(url, headers=headers)
+                runners = result.json()["runners"]
+                all_runners += runners
+
+            runner_exports.export_metrics(all_runners)
         else:
             logger.error(f"Api request returned error: {result.reason} {result.text}")
 
