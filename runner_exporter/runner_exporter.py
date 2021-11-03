@@ -155,36 +155,74 @@ class runnerExports:
         ).set(idle)
 
 
+class githubApi:
+    def __init__(self, github_token, github_owner, logger) -> None:
+        self.metric_runner_api_ratelimit = Gauge(
+            "github_runner_api_remain_rate_limit",
+            "Github Api remaining requests rate limit (per hour)",
+            ["org"],
+        )
+
+        self.headers = {"Authorization": f"token {github_token}"}
+        self.github_owner = github_owner
+
+        self.logger = logger
+
+    def list_runners(self) -> list:
+        runners_list = []
+
+        page = 1
+        per_page = 100
+
+        while True:
+            try:
+                url = f"https://api.github.com/orgs/{self.github_owner}/actions/runners?page={page}&per_page={per_page}"
+                self.logger.debug(
+                    f"Sending the api request for /orgs/{self.github_owner}/actions/runners"
+                )
+                result = requests.get(url, headers=self.headers)
+
+                if result.headers:
+                    remaining_requests = result.headers.get("X-RateLimit-Remaining")
+                    logger.debug(f"Remaining requests: {remaining_requests}")
+                    self.metric_runner_api_ratelimit.labels(self.github_owner).set(
+                        int(remaining_requests)
+                    )
+
+                if result.ok:
+                    api_result = result.json()
+                    runners_list += api_result["runners"]
+
+                    if not "next" in result.links.keys():
+                        break
+                else:
+                    logger.error(
+                        f"Api request returned error: {result.reason} {result.text}"
+                    )
+                    return []
+
+                page += 1
+            except:
+                return []
+
+        return runners_list
+
+
 def main():
 
     # Start prometheus metrics
     logger.info("Starting metrics server")
     start_http_server(8000)
 
-    metric_runner_api_ratelimit = Gauge(
-        "github_runner_api_remain_rate_limit",
-        "Github Api remaining requests rate limit (per hour)",
-        ["org"],
-    )
-
     runner_exports = runnerExports()
 
+    github = githubApi(PRIVATE_GITHUB_TOKEN, OWNER, logger)
+
     while True:
-        headers = {"Authorization": f"token {PRIVATE_GITHUB_TOKEN}"}
-        url = f"https://api.github.com/orgs/{OWNER}/actions/runners"
-        logger.debug(f"Sending the api request for /orgs/{OWNER}/actions/runners")
-        result = requests.get(url, headers=headers)
+        runners_list = github.list_runners()
 
-        if result.headers:
-            value = result.headers.get("X-RateLimit-Remaining")
-            logger.debug(f"Remaining requests: {value}")
-            metric_runner_api_ratelimit.labels(OWNER).set(int(value))
-
-        if result.ok:
-            runner_list = result.json()
-            runner_exports.export_metrics(runner_list["runners"])
-        else:
-            logger.error(f"Api request returned error: {result.reason} {result.text}")
+        if runners_list:
+            runner_exports.export_metrics(runners_list)
 
         sleep(REFRESH_INTERVAL)
 
