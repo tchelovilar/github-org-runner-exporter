@@ -50,7 +50,7 @@ class runnerExports:
 
     def ghostbuster(self, current_runners):
         """
-            Case some runner is deleted this function will remove from the metrics
+        Case some runner is deleted this function will remove from the metrics
         """
         # Remove metric_runner_org_status ghost metrics
         active_metrics = self.metric_runner_org_status._metrics.copy()
@@ -81,7 +81,7 @@ class runnerExports:
 
     def aggregate_labels(self, labels: dict):
         """
-            Aggregate the runners labels in string
+        Aggregate the runners labels in string
         """
         agg_labels = []
         for label in labels:
@@ -129,30 +129,29 @@ class runnerExports:
             ).set(offline)
 
     def export_runner_busy(self, runner: dict, agg_labels: str):
-        idle = 1
-        busy = 0
+        """
+        Export Runner busy status and running status
+        """
+        busy_values = [True, False]
+        status_values = ["online", "offline"]
 
-        if runner.get("busy") == True:
-            idle = 0
-            busy = 1
+        for busy_value in busy_values:
+            for status_value in status_values:
+                metric_value = 0
+                if (
+                    runner.get("busy") == busy_value
+                    and runner.get("status") == status_value
+                ):
+                    metric_value = 1
 
-        self.metric_runner_org_busy.labels(
-            runner.get("name"),
-            runner.get("id"),
-            runner.get("os"),
-            runner.get("status"),
-            agg_labels,
-            "true",
-        ).set(busy)
-
-        self.metric_runner_org_busy.labels(
-            runner.get("name"),
-            runner.get("id"),
-            runner.get("os"),
-            runner.get("status"),
-            agg_labels,
-            "false",
-        ).set(idle)
+                self.metric_runner_org_busy.labels(
+                    runner.get("name"),
+                    runner.get("id"),
+                    runner.get("os"),
+                    status_value,
+                    agg_labels,
+                    str(busy_value).lower(),
+                ).set(metric_value)
 
 
 class githubApi:
