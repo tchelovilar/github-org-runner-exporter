@@ -15,7 +15,7 @@ Prometheus metrics exporter for github actions self-hosted runners.
 
 ## How to deploy
 
-Create a secret with the [private token](https://github.com/settings/tokens) and the ornanization name:
+Create a secret with the [private token](https://github.com/settings/tokens) and the organization name:
 
 ```
 kubectl create secret generic runner-exporter --from-literal=PRIVATE_GITHUB_TOKEN=<token> --from-literal=OWNER=<org>
