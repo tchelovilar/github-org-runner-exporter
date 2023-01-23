@@ -1,14 +1,10 @@
-import requests
 import os
 
 from prometheus_client import start_http_server, Counter, Gauge
 from time import sleep
 from logger import get_logger
+from github_api import githubApi
 
-# Read environment variables
-REFRESH_INTERVAL = int(os.environ.get("REFRESH_INTERVAL", 20))
-PRIVATE_GITHUB_TOKEN = os.environ["PRIVATE_GITHUB_TOKEN"]
-OWNER = os.environ["OWNER"]
 
 logger = get_logger()
 
@@ -154,58 +150,12 @@ class runnerExports:
                 ).set(metric_value)
 
 
-class githubApi:
-    def __init__(self, github_token, github_owner, logger) -> None:
-        self.metric_runner_api_ratelimit = Gauge(
-            "github_runner_api_remain_rate_limit",
-            "Github Api remaining requests rate limit (per hour)",
-            ["org"],
-        )
-
-        self.headers = {"Authorization": f"token {github_token}"}
-        self.github_owner = github_owner
-
-        self.logger = logger
-
-    def list_runners(self) -> list:
-        runners_list = []
-
-        per_page = 100
-        url = f"https://api.github.com/orgs/{self.github_owner}/actions/runners?per_page={per_page}"
-
-        while True:
-            try:
-                self.logger.debug(f"Sending the api request for {url}")
-                result = requests.get(url, headers=self.headers)
-
-                if result.headers:
-                    remaining_requests = result.headers.get("X-RateLimit-Remaining")
-                    logger.debug(f"Remaining requests: {remaining_requests}")
-                    self.metric_runner_api_ratelimit.labels(self.github_owner).set(
-                        int(remaining_requests)
-                    )
-
-                if not result.ok:
-                    logger.error(
-                        f"Api request returned error: {result.reason} {result.text}"
-                    )
-                    return []
-
-                api_result = result.json()
-                runners_list += api_result["runners"]
-
-                if "next" in result.links.keys():
-                    url = result.links["next"]["url"]
-                else:
-                    break
-            except Exception as error:
-                logger.error(f"Exception: {error}")
-                return []
-
-        return runners_list
-
-
 def main():
+    REFRESH_INTERVAL = int(os.getenv("REFRESH_INTERVAL", 20))
+    PRIVATE_GITHUB_TOKEN = os.getenv("PRIVATE_GITHUB_TOKEN")
+    GITHUB_APP_ID = os.getenv("GITHUB_APP_ID")
+    GITHUB_PRIVATE_KEY = os.getenv("GITHUB_PRIVATE_KEY")
+    OWNER = os.getenv("OWNER")
 
     # Start prometheus metrics
     logger.info("Starting metrics server")
@@ -213,7 +163,13 @@ def main():
 
     runner_exports = runnerExports()
 
-    github = githubApi(PRIVATE_GITHUB_TOKEN, OWNER, logger)
+    github = githubApi(
+        OWNER,
+        logger,
+        github_token=PRIVATE_GITHUB_TOKEN,
+        github_app_id=GITHUB_APP_ID,
+        private_key=GITHUB_PRIVATE_KEY,
+    )
 
     while True:
         runners_list = github.list_runners()
