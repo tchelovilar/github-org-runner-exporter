@@ -170,6 +170,7 @@ def main():
         github_token=PRIVATE_GITHUB_TOKEN,
         github_app_id=GITHUB_APP_ID,
         private_key=GITHUB_PRIVATE_KEY,
+        api_url=API_URL,
     )
 
     while True:

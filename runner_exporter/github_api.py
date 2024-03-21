@@ -38,8 +38,10 @@ class githubApi:
         self.github_app_id = github_app_id
         self.private_key = private_key
         self.github_owner = github_owner
-        self.api_url = api_url
         self.logger = logger
+
+        if api_url != "":
+            self.api_url = api_url
 
     def app_jwt_header(self):
         """
