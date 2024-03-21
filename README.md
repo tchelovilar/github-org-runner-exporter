@@ -11,6 +11,7 @@ Prometheus metrics exporter for github actions self-hosted runners.
 | OWNER                | Yes      | Github organization name
 | REFRESH_INTERVAL     | No       | Internval time in seconds betwen api requests (Default: 20)
 | LOG_LEVEL            | No       | Log level: DEBUG, INFO, WARNING or ERROR (Default: INFO)
+| API_URL              | No       | URL to your github API (Default: https://api.github.com)
 
 
 ## How to deploy

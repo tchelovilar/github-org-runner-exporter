@@ -156,6 +156,7 @@ def main():
     GITHUB_APP_ID = os.getenv("GITHUB_APP_ID")
     GITHUB_PRIVATE_KEY = os.getenv("GITHUB_PRIVATE_KEY")
     OWNER = os.getenv("OWNER")
+    API_URL = os.getenv("API_URL")
 
     # Start prometheus metrics
     logger.info("Starting metrics server")
