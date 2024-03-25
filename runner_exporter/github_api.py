@@ -40,9 +40,6 @@ class githubApi:
         self.github_owner = github_owner
         self.logger = logger
 
-        if api_url != "":
-            self.api_url = api_url
-
     def app_jwt_header(self):
         """
         Creates a JSON Web Token (JWT) for authorization to be used with the GitHub API.

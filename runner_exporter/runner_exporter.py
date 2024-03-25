@@ -164,6 +164,9 @@ def main():
 
     runner_exports = runnerExports()
 
+    if API_URL == None or API_URL == "":
+        API_URL = "https://api.github.com"
+
     github = githubApi(
         OWNER,
         logger,
