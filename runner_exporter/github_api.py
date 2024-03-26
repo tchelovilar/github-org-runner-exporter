@@ -22,6 +22,7 @@ class githubApi:
         github_token: str = None,
         github_app_id: str = None,
         private_key: str = None,
+        api_url: str = "https://api.github.com",
     ) -> None:
 
         if github_owner is None or github_owner.strip() == "":
@@ -71,8 +72,6 @@ class githubApi:
         Returns:
             str: The app token for use with the GitHub API
         """
-        api_url = "https://api.github.com"
-
         if self.app_token_expire_at:
             expires_at = datetime.datetime.strptime(
                 self.app_token_expire_at, "%Y-%m-%dT%H:%M:%SZ"
@@ -89,7 +88,7 @@ class githubApi:
 
         try:
             instalations_response = requests.get(
-                f"{api_url}/app/installations", headers=jwt_headers
+                f"{self.api_url}/app/installations", headers=jwt_headers
             )
             instalations_response.raise_for_status()
             instalations = instalations_response.json()
@@ -99,7 +98,7 @@ class githubApi:
 
         try:
             resp = requests.post(
-                f'{api_url}/app/installations/{instalations[0]["id"]}/access_tokens',
+                f'{self.api_url}/app/installations/{instalations[0]["id"]}/access_tokens',
                 headers=jwt_headers,
             )
             resp.raise_for_status()

@@ -156,6 +156,7 @@ def main():
     GITHUB_APP_ID = os.getenv("GITHUB_APP_ID")
     GITHUB_PRIVATE_KEY = os.getenv("GITHUB_PRIVATE_KEY")
     OWNER = os.getenv("OWNER")
+    API_URL = os.getenv("API_URL")
 
     # Start prometheus metrics
     logger.info("Starting metrics server")
@@ -163,12 +164,16 @@ def main():
 
     runner_exports = runnerExports()
 
+    if API_URL == None or API_URL == "":
+        API_URL = "https://api.github.com"
+
     github = githubApi(
         OWNER,
         logger,
         github_token=PRIVATE_GITHUB_TOKEN,
         github_app_id=GITHUB_APP_ID,
         private_key=GITHUB_PRIVATE_KEY,
+        api_url=API_URL,
     )
 
     while True:
