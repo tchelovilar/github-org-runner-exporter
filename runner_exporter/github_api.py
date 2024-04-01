@@ -38,6 +38,7 @@ class githubApi:
         self.github_app_id = github_app_id
         self.private_key = private_key
         self.github_owner = github_owner
+        self.api_url = api_url
         self.logger = logger
 
     def app_jwt_header(self):
@@ -152,7 +153,7 @@ class githubApi:
         headers = self.get_headers()
 
         per_page = 100
-        url = f"https://api.github.com/orgs/{self.github_owner}/actions/runners?per_page={per_page}"
+        url = f"{self.api_url}/orgs/{self.github_owner}/actions/runners?per_page={per_page}"
 
         while True:
             try:
