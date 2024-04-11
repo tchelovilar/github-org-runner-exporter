@@ -42,8 +42,8 @@ Once you have created the Github APP, installed it and downloaded the private ke
 
 ```bash
 kubectl create secret generic runner-exporter \
-        --from-literal=OWNER=<organization_name> \
-        --from-literal=GITHUB_APP_ID=<app_id> \
+        --from-literal=OWNER=organization_name \
+        --from-literal=GITHUB_APP_ID=app_id \
         --from-literal=GITHUB_PRIVATE_KEY="-----KEY-----
 xxxxxxxx
 xxxxxxxx
@@ -112,17 +112,17 @@ You can run it also in the docker-compose. (Thanks @littlej956)
 
 ```yaml
 services:
-	github_runners_exporter:
-		image: tchelovilar/github-org-runner-exporter:0.2.2
-		container_name: github_runner_exporter
-		environment:
-		- OWNER=owner
-		- GITHUB_APP_ID=12312312
-		- |
-				GITHUB_PRIVATE_KEY=-----KEY-----
-				xxxxxxxx
-				xxxxxxxx
-				xxxxxxxx
-				-----END KEY-----
-		- LOG_LEVEL=DEBUG
+  github_runners_exporter:
+    image: ghcr.io/tchelovilar/github-org-runner-exporter:latest
+    container_name: github_runner_exporter
+    environment:
+    - OWNER=owner
+    - GITHUB_APP_ID=12312312
+    - |
+        GITHUB_PRIVATE_KEY=-----KEY-----
+        xxxxxxxx
+        xxxxxxxx
+        xxxxxxxx
+        -----END KEY-----
+    - LOG_LEVEL=DEBUG
 ```
