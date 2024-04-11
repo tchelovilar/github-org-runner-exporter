@@ -1,9 +1,9 @@
 # Default values for prometheus-org-runner-exporter.
 
 image:
-  repository: tchelovilar/github-org-runner-exporter
+  repository: ghcr.io/tchelovilar/github-org-runner-exporter
   pullPolicy: IfNotPresent
-  tag: "0.1.7"
+  tag: "v0.2.3@sha256:3551590875e331fa7b476d71a907bc6c5d7eb32de825513afaa3c789c548487d"
 
 
 nameOverride: ""
